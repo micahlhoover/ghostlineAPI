@@ -14,7 +14,6 @@ namespace GhostLineAPI
     public class GhostLineAPIServer
     {
         private List<Assembly> _monitoredAssemblies;
-        //private Dictionary<String, ServableItem> _servableItems;
         private List<ServableItem> _servableItems;
         private object _parentObj;
 
@@ -28,7 +27,6 @@ namespace GhostLineAPI
         }
         public String Address { get; set; }     // e.g. "127.0.0.1"
         public int Port { get; set; }
-        //private List<PropertyInfo>
 
         public Func<HttpListenerRequest, bool> Authenticator { get; set; }
         public Action After { get; set; }
@@ -37,7 +35,6 @@ namespace GhostLineAPI
         {
             // Set up
             _monitoredAssemblies = new List<Assembly>();
-            //_servableItems = new Dictionary<String, ServableItem>();
             _servableItems = new List<ServableItem>();
             Authenticator = null;
 
@@ -45,39 +42,17 @@ namespace GhostLineAPI
             {
                 Address = "127.0.0.1";
             }
-            //_parentObj = parentObj;
-
-            
-            //SetupAndStartServer();
         }
 
         public void SetupAndStartServer()
         {
             ReflectServableItems();
-            //var settings = New JsonSerializerSettings();
-            //config.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-            //GlobalConfiguration.Configuration.Formatters.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-
-            //IPAddress address = IPAddress.Parse(Address);
-            //var listener = new TcpListener(address, Port);
-
-            //listener.Start();
-
-            //Console.WriteLine($"Server is online at {Address} and listening on { Port }.");
 
             if (!HttpListener.IsSupported)
             {
                 Console.WriteLine("Windows XP SP2 or Server 2003 is required to use the HttpListener class.");
                 return;
             }
-            // URI prefixes are required,
-            // for example "http://contoso.com:8080/index/".
-            //if (prefixes == null || prefixes.Length == 0)
-            //    throw new ArgumentException("prefixes");
-
-//            var prefixes = _servableItems.Select( si => si.)
-
-            // Create a listener.
             HttpListener listener = new HttpListener();
             // Add the prefixes.
             var prefixes = _servableItems.Select(si =>
@@ -102,6 +77,7 @@ namespace GhostLineAPI
                 listener.Start();
                 Console.WriteLine("Listening...");
                 // Note: The GetContext method blocks while waiting for a request. 
+
                 HttpListenerContext context = listener.GetContext();
                 HttpListenerRequest request = context.Request;
 
@@ -135,15 +111,20 @@ namespace GhostLineAPI
 
                         var serviceObj = _servableItems.Where(si => si.AccessName.Equals(lastToken, StringComparison.InvariantCultureIgnoreCase)).First();
 
-                        responseString = JsonConvert.SerializeObject(serviceObj.Object);
-                        response.StatusCode = (int)HttpStatusCode.OK;
+                        if (serviceObj.CanRead)
+                        {
+                            responseString = JsonConvert.SerializeObject(serviceObj.Object);
+                            response.StatusCode = (int)HttpStatusCode.OK;
+                        } else
+                        {
+                            responseString = "This is not read enabled at this time. Add [GhostRead] attribute.";
+                            response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                        }
 
                         if (After != null)
                             After();
                     }
-                    // I realize the RFC makes a distinction between how these HTTP verbs are used ... but ... the world doesn't ...
-                    // So no support for injecting stuff into the external app that isn't already there. Consider it, though.
-                    else if (request.HttpMethod.ToLower() == "post" || request.HttpMethod.ToLower() == "put")
+                    else if (request.HttpMethod.ToLower() == "post")    // TODO: consider adding PUT for new stuff
                     {
                         // set the value
                         var name = request.Url;     // {http://127.0.0.1:19001/UntrainedElkDogs}
@@ -155,19 +136,27 @@ namespace GhostLineAPI
 
                         var thisObj = JsonConvert.DeserializeObject(payload, serviceItemType);
 
-                        if (serviceObj.PropertyInfo != null)
+                        if (serviceObj.CanWrite)
                         {
-                            serviceObj.PropertyInfo.SetValue(serviceObj.Object, thisObj);
-                            // OK ... it really is set now ... but it won't show up in the next GET unless we update the reference
-                            serviceObj.Object = serviceObj.PropertyInfo.GetValue(_parentObj);
+                            if (serviceObj.PropertyInfo != null)
+                            {
+                                serviceObj.PropertyInfo.SetValue(serviceObj.Object, thisObj);
+                                // OK ... it really is set now ... but it won't show up in the next GET unless we update the reference
+                                serviceObj.Object = serviceObj.PropertyInfo.GetValue(_parentObj);
+                            }
+                            else
+                            {
+                                serviceObj.FieldInfo.SetValue(serviceObj.Object, thisObj);
+                                // OK ... it really is set now ... but it won't show up in the next GET unless we update the reference
+                                serviceObj.Object = serviceObj.FieldInfo.GetValue(_parentObj);
+                            }
+                            response.StatusCode = (int)HttpStatusCode.OK;
                         } else
                         {
-                            serviceObj.FieldInfo.SetValue(serviceObj.Object, thisObj);
-                            // OK ... it really is set now ... but it won't show up in the next GET unless we update the reference
-                            serviceObj.Object = serviceObj.FieldInfo.GetValue(_parentObj);
+                            responseString = "This is not write enabled at this time. Add [GhostWrite] attribute.";
+                            response.StatusCode = (int)HttpStatusCode.Unauthorized;
                         }
 
-                        response.StatusCode = (int)HttpStatusCode.OK;
                         if (After != null)
                             After();
                     }
@@ -201,7 +190,7 @@ namespace GhostLineAPI
             // check out the assemblies
             foreach (var assembly in assemblies)
             {
-                Console.WriteLine("Assembly found: " + assembly.FullName);
+                //Console.WriteLine("Assembly found: " + assembly.FullName);
                 if (!assembly.FullName.StartsWith("System.") && !assembly.FullName.Equals("GhostLineAPI"))
                 {
                     _monitoredAssemblies.Add(assembly);

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>GhostLine.GhostLineAPI</id>
+    <version>1.0.0</version>
+    <authors>Micah Hoover</authors>
+    <owners>Micah Hoover</owners>
+    <title>GhostLine API</title>
+    <projectUrl>https://github.com/micahlhoover/ghostlineAPI</projectUrl>
+    <iconUrl>https://georgewashingtoncsharp.files.wordpress.com/2016/10/ghostline.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A library you can just add and it serves your C# objects (with easy authentication)</description>
+    <releaseNotes>First commit</releaseNotes>
+    <copyright>Copyright 2019</copyright>
+    <tags>C# API</tags>
+  </metadata>
+  <files>
+    <file src="lib\Debug\netcoreapp2.1\GhostLineAPI.deps.json" />
+	<file src="lib\Debug\netcoreapp2.1\GhostLineAPI.dll" />
+	<file src="lib\Debug\netcoreapp2.1\GhostLineAPI.pdb" />
+	<file src="lib\GhostLineAPI.dll" />
+  </files>
+</package>

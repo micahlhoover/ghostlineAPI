@@ -10,10 +10,10 @@ namespace ExternalApp
 {
     class ElkDogManager
     {
-        [GhostRead]
+        [GhostWrite,GhostRead]
         public static List<ElkDog> UntrainedElkDogs { get; set; }
 
-        [GhostWrite]
+        [GhostWrite, GhostRead]
         public static List<ElkDog> TrainedElkDogs { get; set; }
 
         public ElkDogManager()

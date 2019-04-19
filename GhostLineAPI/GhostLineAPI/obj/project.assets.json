@@ -743,11 +743,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\ryan.l.hoover\\source\\repos\\GhostLineAPI\\GhostLineAPI\\GhostLineAPI.csproj",
+      "projectUniqueName": "C:\\Users\\ryan.l.hoover\\Desktop\\App Projects\\ghostLineAPI\\ghostlineAPI\\GhostLineAPI\\GhostLineAPI\\GhostLineAPI.csproj",
       "projectName": "GhostLineAPI",
-      "projectPath": "C:\\Users\\ryan.l.hoover\\source\\repos\\GhostLineAPI\\GhostLineAPI\\GhostLineAPI.csproj",
+      "projectPath": "C:\\Users\\ryan.l.hoover\\Desktop\\App Projects\\ghostLineAPI\\ghostlineAPI\\GhostLineAPI\\GhostLineAPI\\GhostLineAPI.csproj",
       "packagesPath": "C:\\Users\\ryan.l.hoover\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\ryan.l.hoover\\source\\repos\\GhostLineAPI\\GhostLineAPI\\obj\\",
+      "outputPath": "C:\\Users\\ryan.l.hoover\\Desktop\\App Projects\\ghostLineAPI\\ghostlineAPI\\GhostLineAPI\\GhostLineAPI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
