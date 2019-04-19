@@ -10,6 +10,7 @@ Just add some annotations to one of your classes:
 	public static List<ElkDog> TrainedElkDogs { get; set; }
 
 Then set some server variables:
+
 	GhostLineAPIServer apiServer = new GhostLineAPIServer
 	{
 		ParentObj = (object)this,
