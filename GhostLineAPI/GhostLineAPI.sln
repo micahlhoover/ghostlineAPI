@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28729.10
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhostLineAPI", "GhostLineAPI\GhostLineAPI.csproj", "{A8069DCC-3593-4E66-9BDB-DA9856310867}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExternalApp", "ExternalApp\ExternalApp.csproj", "{3A3B38C2-F873-4684-A9AB-F1393E362A70}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A8069DCC-3593-4E66-9BDB-DA9856310867}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8069DCC-3593-4E66-9BDB-DA9856310867}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8069DCC-3593-4E66-9BDB-DA9856310867}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8069DCC-3593-4E66-9BDB-DA9856310867}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A3B38C2-F873-4684-A9AB-F1393E362A70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A3B38C2-F873-4684-A9AB-F1393E362A70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A3B38C2-F873-4684-A9AB-F1393E362A70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A3B38C2-F873-4684-A9AB-F1393E362A70}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D932A988-8A69-4BB1-9B68-94ED315929E3}
+	EndGlobalSection
+EndGlobal
