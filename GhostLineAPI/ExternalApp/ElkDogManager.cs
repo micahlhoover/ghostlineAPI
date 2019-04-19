@@ -78,7 +78,6 @@ namespace ExternalApp
                 Console.WriteLine($"Elkdog: {elkDog.Name}\t Id: {elkDog.Id}\t Role: {elkDog.Role.ToString()}");
             }
 
-
             // Kick the tires and light the fires
             GhostLineAPIServer apiServer = new GhostLineAPIServer
             {
@@ -100,19 +99,7 @@ namespace ExternalApp
                 Console.WriteLine("Current: " + UntrainedElkDogs[0].Name + " can fly? " + UntrainedElkDogs[0].CanFly);
             };
 
-            //apiServer.Authenticator = new Func<System.Net.HttpListenerRequest, bool> (req) =>
-            //{
-            //    return false;
-            //};
             apiServer.SetupAndStartServer();
-
-//            127.0.0.1:19001 / UntrainedElkDogs
-
-            //GhostLineAPIServer apiServer = new GhostLineAPIServer();
-            //apiServer.ParentObj = (object)this;
-            //apiServer.Address = "127.0.0.1";
-            //apiServer.Port = 19001;
-
 
             Console.ReadLine();
         }
