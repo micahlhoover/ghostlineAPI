@@ -1,7 +1,7 @@
 # ghostlineAPI
-A library you can just add, and it serves your C# objects (with easy Authentication)
+A super easy auto API library (with easy Authentication). Just add annotations and then start the server.
 
-Just add some annotations to one of your classes:
+Step #1: Add some annotations to one of your classes:
 
 	[GhostWrite,GhostRead]
 	public static List<ElkDog> UntrainedElkDogs { get; set; }
@@ -9,7 +9,7 @@ Just add some annotations to one of your classes:
 	[GhostRead]
 	public static List<ElkDog> TrainedElkDogs { get; set; }
 
-Then set some server variables:
+Step #2: Set some server variables:
 
 	GhostLineAPIServer apiServer = new GhostLineAPIServer
 	{
@@ -25,6 +25,7 @@ Authentication can optionally be enabled like this:
 
 	apiServer.Authenticator = delegate (HttpListenerRequest req)
 	{
+		// You can put any C# code here, so you can compare with user database
 		if (String.IsNullOrEmpty(req.Headers["Authorization"]))
 			return false;
 
@@ -33,6 +34,4 @@ Authentication can optionally be enabled like this:
 		return false;
 	};
 
-
-
-
+And just like that you can customize authentication without any changes to the server code.
