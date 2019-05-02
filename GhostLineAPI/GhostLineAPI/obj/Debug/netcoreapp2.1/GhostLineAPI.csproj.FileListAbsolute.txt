@@ -6,4 +6,3 @@ C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineA
 C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\GhostLineAPI\obj\Debug\netcoreapp2.1\GhostLineAPI.AssemblyInfo.cs
 C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\GhostLineAPI\obj\Debug\netcoreapp2.1\GhostLineAPI.dll
 C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\GhostLineAPI\obj\Debug\netcoreapp2.1\GhostLineAPI.pdb
-C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\GhostLineAPI\obj\Debug\netcoreapp2.1\GhostLineAPI.csprojAssemblyReference.cache
