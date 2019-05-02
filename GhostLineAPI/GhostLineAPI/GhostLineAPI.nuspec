@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>GhostLine.GhostLineAPI</id>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <authors>Micah Hoover</authors>
     <owners>Micah Hoover</owners>
     <title>GhostLine API</title>
@@ -10,7 +10,7 @@
     <iconUrl>https://georgewashingtoncsharp.files.wordpress.com/2016/10/ghostline.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A library you can just add and it serves your C# objects (with easy authentication)</description>
-    <releaseNotes>First commit</releaseNotes>
+    <releaseNotes>Internal changes and unit tests</releaseNotes>
     <copyright>Copyright 2019</copyright>
     <tags>C# API</tags>
   </metadata>

@@ -8,6 +8,7 @@
     ".NETCoreApp,Version=v2.1": {
       "ExternalApp/1.0.0": {
         "dependencies": {
+          "ElkDogModel": "1.0.0",
           "GhostLineAPI": "1.0.0"
         },
         "runtime": {
@@ -20,6 +21,14 @@
             "assemblyVersion": "12.0.0.0",
             "fileVersion": "12.0.1.22727"
           }
+        }
+      },
+      "ElkDogModel/1.0.0": {
+        "dependencies": {
+          "GhostLineAPI": "1.0.0"
+        },
+        "runtime": {
+          "ElkDogModel.dll": {}
         }
       },
       "GhostLineAPI/1.0.0": {
@@ -44,6 +53,11 @@
       "sha512": "sha512-pBR3wCgYWZGiaZDYP+HHYnalVnPJlpP1q55qvVb+adrDHmFMDc1NAKio61xTwftK3Pw5h7TZJPJEEVMd6ty8rg==",
       "path": "newtonsoft.json/12.0.1",
       "hashPath": "newtonsoft.json.12.0.1.nupkg.sha512"
+    },
+    "ElkDogModel/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     },
     "GhostLineAPI/1.0.0": {
       "type": "project",

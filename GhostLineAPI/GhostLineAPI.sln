@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28729.10
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhostLineAPI", "GhostLineAPI\GhostLineAPI.csproj", "{A8069DCC-3593-4E66-9BDB-DA9856310867}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GhostLineAPI", "GhostLineAPI\GhostLineAPI.csproj", "{A8069DCC-3593-4E66-9BDB-DA9856310867}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExternalApp", "ExternalApp\ExternalApp.csproj", "{3A3B38C2-F873-4684-A9AB-F1393E362A70}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExternalApp", "ExternalApp\ExternalApp.csproj", "{3A3B38C2-F873-4684-A9AB-F1393E362A70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhostLineAPI_CoreTest", "GhostLineAPI_CoreTest\GhostLineAPI_CoreTest.csproj", "{EA96C557-F30A-4886-BE2B-C68D8CEBA6A7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElkDogModel", "ElkDogManager\ElkDogModel.csproj", "{B4969B50-8A80-444B-A4C6-F9601F9F0BB8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{3A3B38C2-F873-4684-A9AB-F1393E362A70}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A3B38C2-F873-4684-A9AB-F1393E362A70}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A3B38C2-F873-4684-A9AB-F1393E362A70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA96C557-F30A-4886-BE2B-C68D8CEBA6A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA96C557-F30A-4886-BE2B-C68D8CEBA6A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA96C557-F30A-4886-BE2B-C68D8CEBA6A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA96C557-F30A-4886-BE2B-C68D8CEBA6A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4969B50-8A80-444B-A4C6-F9601F9F0BB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4969B50-8A80-444B-A4C6-F9601F9F0BB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4969B50-8A80-444B-A4C6-F9601F9F0BB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4969B50-8A80-444B-A4C6-F9601F9F0BB8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

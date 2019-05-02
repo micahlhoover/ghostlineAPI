@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -182,7 +183,7 @@ namespace GhostLineAPI
             listener.Stop();
         }
 
-        private void ReflectServableItems()
+        private List<ServableItem> ReflectServableItems()
         {
             // Find all GhostLine API attributes in other assemblies
             Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
@@ -190,8 +191,11 @@ namespace GhostLineAPI
             // check out the assemblies
             foreach (var assembly in assemblies)
             {
+                Debug.WriteLine("Assembly found: " + assembly.FullName);
                 //Console.WriteLine("Assembly found: " + assembly.FullName);
-                if (!assembly.FullName.StartsWith("System.") && !assembly.FullName.Equals("GhostLineAPI"))
+                if (!assembly.FullName.StartsWith("System.") 
+                    && !assembly.FullName.Equals("GhostLineAPI")
+                    && !assembly.FullName.StartsWith("Microsoft"))
                 {
                     _monitoredAssemblies.Add(assembly);
                 }
@@ -306,6 +310,7 @@ namespace GhostLineAPI
                     // all properties and fields should now be in _servableItems
                 }
             }
+            return _servableItems;
         }
     }
 }

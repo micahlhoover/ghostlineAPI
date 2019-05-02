@@ -1,0 +1,18 @@
+C:\Users\ryan.l.hoover\source\repos\GhostLineAPI\ExternalApp\bin\Debug\netcoreapp2.1\ExternalApp.deps.json
+C:\Users\ryan.l.hoover\source\repos\GhostLineAPI\ExternalApp\bin\Debug\netcoreapp2.1\ExternalApp.runtimeconfig.json
+C:\Users\ryan.l.hoover\source\repos\GhostLineAPI\ExternalApp\bin\Debug\netcoreapp2.1\ExternalApp.runtimeconfig.dev.json
+C:\Users\ryan.l.hoover\source\repos\GhostLineAPI\ExternalApp\bin\Debug\netcoreapp2.1\ExternalApp.dll
+C:\Users\ryan.l.hoover\source\repos\GhostLineAPI\ExternalApp\bin\Debug\netcoreapp2.1\ExternalApp.pdb
+C:\Users\ryan.l.hoover\source\repos\GhostLineAPI\ExternalApp\bin\Debug\netcoreapp2.1\GhostLineAPI.dll
+C:\Users\ryan.l.hoover\source\repos\GhostLineAPI\ExternalApp\bin\Debug\netcoreapp2.1\GhostLineAPI.pdb
+C:\Users\ryan.l.hoover\source\repos\GhostLineAPI\ExternalApp\obj\Debug\netcoreapp2.1\ExternalApp.csprojAssemblyReference.cache
+C:\Users\ryan.l.hoover\source\repos\GhostLineAPI\ExternalApp\obj\Debug\netcoreapp2.1\ExternalApp.csproj.CoreCompileInputs.cache
+C:\Users\ryan.l.hoover\source\repos\GhostLineAPI\ExternalApp\obj\Debug\netcoreapp2.1\ExternalApp.AssemblyInfoInputs.cache
+C:\Users\ryan.l.hoover\source\repos\GhostLineAPI\ExternalApp\obj\Debug\netcoreapp2.1\ExternalApp.AssemblyInfo.cs
+C:\Users\ryan.l.hoover\source\repos\GhostLineAPI\ExternalApp\obj\Debug\netcoreapp2.1\ExternalApp.csproj.CopyComplete
+C:\Users\ryan.l.hoover\source\repos\GhostLineAPI\ExternalApp\obj\Debug\netcoreapp2.1\ExternalApp.dll
+C:\Users\ryan.l.hoover\source\repos\GhostLineAPI\ExternalApp\obj\Debug\netcoreapp2.1\ExternalApp.pdb
+C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\ExternalApp\obj\Debug\netcoreapp2.1\ExternalApp.csprojAssemblyReference.cache
+C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\ExternalApp\obj\Debug\netcoreapp2.1\ExternalApp.csproj.CoreCompileInputs.cache
+C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\ExternalApp\obj\Debug\netcoreapp2.1\ExternalApp.AssemblyInfoInputs.cache
+C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\ExternalApp\obj\Debug\netcoreapp2.1\ExternalApp.AssemblyInfo.cs

@@ -1,0 +1,12 @@
+C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\ElkDogManager\bin\Debug\netcoreapp2.1\ElkDogModel.deps.json
+C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\ElkDogManager\bin\Debug\netcoreapp2.1\ElkDogModel.dll
+C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\ElkDogManager\bin\Debug\netcoreapp2.1\ElkDogModel.pdb
+C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\ElkDogManager\bin\Debug\netcoreapp2.1\GhostLineAPI.dll
+C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\ElkDogManager\bin\Debug\netcoreapp2.1\GhostLineAPI.pdb
+C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\ElkDogManager\obj\Debug\netcoreapp2.1\ElkDogModel.csprojAssemblyReference.cache
+C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\ElkDogManager\obj\Debug\netcoreapp2.1\ElkDogModel.csproj.CoreCompileInputs.cache
+C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\ElkDogManager\obj\Debug\netcoreapp2.1\ElkDogModel.AssemblyInfoInputs.cache
+C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\ElkDogManager\obj\Debug\netcoreapp2.1\ElkDogModel.AssemblyInfo.cs
+C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\ElkDogManager\obj\Debug\netcoreapp2.1\ElkDogModel.csproj.CopyComplete
+C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\ElkDogManager\obj\Debug\netcoreapp2.1\ElkDogModel.dll
+C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\ElkDogManager\obj\Debug\netcoreapp2.1\ElkDogModel.pdb

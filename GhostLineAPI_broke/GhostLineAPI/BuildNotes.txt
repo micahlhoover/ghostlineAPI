@@ -1,0 +1,9 @@
+﻿GhostLine API
+	A library you can just add and it serves your C# objects (with easy authentication)
+
+Run the nuget build like this:
+	nuget pack GhostLineAPI.nuspec
+
+Put bin\Debug\netcoreapp2.1\GhostLineAPI.dll into the \lib folder?
+
+

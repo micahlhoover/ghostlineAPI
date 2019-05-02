@@ -217,6 +217,19 @@
           "lib/netstandard2.0/Newtonsoft.Json.dll": {}
         }
       },
+      "ElkDogModel/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v2.1",
+        "dependencies": {
+          "GhostLineAPI": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/ElkDogModel.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/ElkDogModel.dll": {}
+        }
+      },
       "GhostLineAPI/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v2.1",
@@ -742,6 +755,11 @@
         "newtonsoft.json.nuspec"
       ]
     },
+    "ElkDogModel/1.0.0": {
+      "type": "project",
+      "path": "../ElkDogManager/ElkDogModel.csproj",
+      "msbuildProject": "../ElkDogManager/ElkDogModel.csproj"
+    },
     "GhostLineAPI/1.0.0": {
       "type": "project",
       "path": "../GhostLineAPI/GhostLineAPI.csproj",
@@ -750,6 +768,7 @@
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v2.1": [
+      "ElkDogModel >= 1.0.0",
       "GhostLineAPI >= 1.0.0",
       "Microsoft.NETCore.App >= 2.1.0"
     ]
@@ -784,6 +803,9 @@
       "frameworks": {
         "netcoreapp2.1": {
           "projectReferences": {
+            "C:\\Users\\ryan.l.hoover\\Desktop\\App Projects\\ghostLineAPI\\ghostlineAPI\\GhostLineAPI\\ElkDogManager\\ElkDogModel.csproj": {
+              "projectPath": "C:\\Users\\ryan.l.hoover\\Desktop\\App Projects\\ghostLineAPI\\ghostlineAPI\\GhostLineAPI\\ElkDogManager\\ElkDogModel.csproj"
+            },
             "C:\\Users\\ryan.l.hoover\\Desktop\\App Projects\\ghostLineAPI\\ghostlineAPI\\GhostLineAPI\\GhostLineAPI\\GhostLineAPI.csproj": {
               "projectPath": "C:\\Users\\ryan.l.hoover\\Desktop\\App Projects\\ghostLineAPI\\ghostlineAPI\\GhostLineAPI\\GhostLineAPI\\GhostLineAPI.csproj"
             }

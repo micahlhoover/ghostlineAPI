@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>..\GhostLineAPI\GhostLineAPI.csproj</id>
+    <version>1.0.0</version>
+    <authors>Micah Hoover</authors>
+    <owners>Micah Hoover</owners>
+    <licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl>
+    <projectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</projectUrl>
+    <iconUrl>https://georgewashingtoncsharp.files.wordpress.com/2016/10/ghostline.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A library you can just add and it serves your C# objects (with easy authentication)</description>
+    <releaseNotes>Initial version</releaseNotes>
+    <copyright>Copyright 2019</copyright>
+    <tags>C# API</tags>
+    <dependencies>
+      <dependency id="SampleDependency" version="1.0" />
+    </dependencies>
+  </metadata>
+</package>

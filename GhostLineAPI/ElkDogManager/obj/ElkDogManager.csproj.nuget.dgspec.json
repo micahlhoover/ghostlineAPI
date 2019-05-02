@@ -1,0 +1,120 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\ryan.l.hoover\\Desktop\\App Projects\\ghostLineAPI\\ghostlineAPI\\GhostLineAPI\\ElkDogManager\\ElkDogManager.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\ryan.l.hoover\\Desktop\\App Projects\\ghostLineAPI\\ghostlineAPI\\GhostLineAPI\\ElkDogManager\\ElkDogManager.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\ryan.l.hoover\\Desktop\\App Projects\\ghostLineAPI\\ghostlineAPI\\GhostLineAPI\\ElkDogManager\\ElkDogManager.csproj",
+        "projectName": "ElkDogManager",
+        "projectPath": "C:\\Users\\ryan.l.hoover\\Desktop\\App Projects\\ghostLineAPI\\ghostlineAPI\\GhostLineAPI\\ElkDogManager\\ElkDogManager.csproj",
+        "packagesPath": "C:\\Users\\ryan.l.hoover\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\ryan.l.hoover\\Desktop\\App Projects\\ghostLineAPI\\ghostlineAPI\\GhostLineAPI\\ElkDogManager\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\ryan.l.hoover\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp2.1": {
+            "projectReferences": {
+              "C:\\Users\\ryan.l.hoover\\Desktop\\App Projects\\ghostLineAPI\\ghostlineAPI\\GhostLineAPI\\GhostLineAPI\\GhostLineAPI.csproj": {
+                "projectPath": "C:\\Users\\ryan.l.hoover\\Desktop\\App Projects\\ghostLineAPI\\ghostlineAPI\\GhostLineAPI\\GhostLineAPI\\GhostLineAPI.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp2.1": {
+          "dependencies": {
+            "Microsoft.NETCore.App": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.1.0, )",
+              "autoReferenced": true
+            }
+          },
+          "imports": [
+            "net461"
+          ],
+          "assetTargetFallback": true,
+          "warn": true
+        }
+      }
+    },
+    "C:\\Users\\ryan.l.hoover\\Desktop\\App Projects\\ghostLineAPI\\ghostlineAPI\\GhostLineAPI\\GhostLineAPI\\GhostLineAPI.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\ryan.l.hoover\\Desktop\\App Projects\\ghostLineAPI\\ghostlineAPI\\GhostLineAPI\\GhostLineAPI\\GhostLineAPI.csproj",
+        "projectName": "GhostLineAPI",
+        "projectPath": "C:\\Users\\ryan.l.hoover\\Desktop\\App Projects\\ghostLineAPI\\ghostlineAPI\\GhostLineAPI\\GhostLineAPI\\GhostLineAPI.csproj",
+        "packagesPath": "C:\\Users\\ryan.l.hoover\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\ryan.l.hoover\\Desktop\\App Projects\\ghostLineAPI\\ghostlineAPI\\GhostLineAPI\\GhostLineAPI\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\ryan.l.hoover\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp2.1": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp2.1": {
+          "dependencies": {
+            "Microsoft.NETCore.App": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.1.0, )",
+              "autoReferenced": true
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[12.0.1, )"
+            }
+          },
+          "imports": [
+            "net461"
+          ],
+          "assetTargetFallback": true,
+          "warn": true
+        }
+      }
+    }
+  }
+}
