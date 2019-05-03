@@ -4,6 +4,4 @@
 Run the nuget build like this:
 	nuget pack GhostLineAPI.nuspec
 
-Put bin\Debug\netcoreapp2.1\GhostLineAPI.dll into the \lib folder?
-
-
+Make sure to copy the bin/ dll to lib

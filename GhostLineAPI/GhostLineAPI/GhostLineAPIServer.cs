@@ -109,13 +109,73 @@ namespace GhostLineAPI
                         var name = request.Url;     // {http://127.0.0.1:19001/UntrainedElkDogs}
                         var tokens = request.Url.ToString().Split('/');
                         var lastToken = tokens[tokens.Length - 1];  // the last one should correspond to the property or object name
+                        if (lastToken.Contains('?'))
+                        {
+                            lastToken = lastToken.Split("?")[0];
+//                            var sections = Regex.Split("?");    //lastToken.Split('?');
+                            //tokens = sections[0];
+                        }
+                        var filterKeys = request.QueryString;
 
                         var serviceObj = _servableItems.Where(si => si.AccessName.Equals(lastToken, StringComparison.InvariantCultureIgnoreCase)).First();
 
                         if (serviceObj.CanRead)
                         {
-                            responseString = JsonConvert.SerializeObject(serviceObj.Object);
-                            response.StatusCode = (int)HttpStatusCode.OK;
+                            // check to see if enumerable
+                            //var objs = serviceObj.Object as Enumerable;
+
+                            //if (objs != null)
+                            //if (filterKeys.AllKeys.Count() == 0 || !typeof(Enumerable).IsAssignableFrom(serviceObj.Type))
+                            if (filterKeys.AllKeys.Count() == 0 )
+                            {
+                                responseString = JsonConvert.SerializeObject(serviceObj.Object);
+                                response.StatusCode = (int)HttpStatusCode.OK;
+                            } else
+                            {
+                                var innerType = serviceObj.Object.GetType().GetGenericArguments()[0];
+                                //Type T = serviceObj.Type;
+                                //var results = Utils.CreateList(T);
+                                //Type genericListType = typeof(thisType).MakeGenericType(thisType);
+                                //IEnumerable <innerType> result = serviceObj.Object;
+                                //IEnumerable<> result = serviceObj.Object as Int;
+                                //var enumerable = (IEnumerable)serviceObj.Object;
+                                //var enumerable = (IEnumerable<>)serviceObj.Object;
+                                //var result = GetFilteredList<serviceObj.Type>(serivceObj.Object);
+
+                                //System.Reflection.PropertyInfo myProperty = this.GetType().GetProperty(serviceObj.PropertyName);
+                                //object res = myProperty.GetValue(this, null);
+                                //Type t = res.GetType();
+                                //System.Reflection.MethodInfo mi = t.GetMethod("ToEnumerable");
+                                //return (Enumerable)mi.Invoke(res, null);
+
+                                //IEnumerable e = serviceObj.Object as IEnumerable;
+                                var enumerables = (IEnumerable<object>)serviceObj.Object;
+                                var results = new List<object>();
+                                foreach(var item in enumerables)
+                                {
+                                    bool allMatched = true;
+                                    foreach(var attributeName in filterKeys.AllKeys)
+                                    {
+                                        //var item.GetType();
+
+                                        var candidateValObject = item.GetType().GetProperty(attributeName).GetValue(item, null);
+                                        //Type myListElementType = enumerables.GetType().GetGenericArguments().Single();
+                                        //var newTypedVal = (myListElementType)Convert.ChangeType(candidateValObject, typeof(myListElementType));
+                                        //if ((myListElementType)candidateValObject != filterKeys[attributeName])
+                                        var filterKeyVal = filterKeys[attributeName];
+                                        if (!candidateValObject.ToString().Equals(filterKeyVal, StringComparison.InvariantCultureIgnoreCase))
+                                        {
+                                            allMatched = false;
+                                        }
+                                    }
+                                    if (allMatched)
+                                    {
+                                        results.Add(item);
+                                    }
+                                }
+                                responseString = JsonConvert.SerializeObject(results);
+                                response.StatusCode = (int)HttpStatusCode.OK;
+                            }
                         } else
                         {
                             responseString = "This is not read enabled at this time. Add [GhostRead] attribute.";
