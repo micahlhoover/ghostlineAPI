@@ -437,6 +437,11 @@ namespace GhostLineAPI
             listener.Stop();
         }
 
+        public void Refresh()
+        {
+            ReflectServableItems();
+        }
+
         private List<ServableItem> ReflectServableItems()
         {
             // Find all GhostLine API attributes in other assemblies

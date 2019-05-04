@@ -36,6 +36,8 @@ Authentication can optionally be enabled like this:
 
 And just like that you can customize authentication without any changes to the server code.
 
+You can also add a Before delegate to populate a property with database results before the API server pulls the results. Make sure you refresh afterwords in your delegate.
+
 Item retrievable with open query patterns is available.
 
 So this URL:
@@ -54,5 +56,21 @@ Can give you:
 
 	[{"CanFly":false,"Name":"Furtile","MarketValue":300.0,"Role":0,"Longitude":-78.66111,"Latitude":35.90557,"Id":"66f7d533-28e4-44a2-95f3-8bb88429c80b"},{"CanFly":false,"Name":"Jeb","MarketValue":300.0,"Role":0,"Longitude":-78.66111,"Latitude":35.90557,"Id":"8e687be8-d1db-4b7a-8285-30870b43ef57"},{"CanFly":false,"Name":"Benji","MarketValue":300.0,"Role":0,"Longitude":-78.66111,"Latitude":35.90557,"Id":"ec0669f4-a6f9-4260-98c1-54ebe2c7725c"}]
 
+If you POST a single object (i.e. no outer JSON array), you are implying you are sending a new object to be appended to the list. Make sure the underlying object is a List.
 
+If you POST an array, the entire object will be replaced. [TODO: make this only work if empty]
 
+If you PUT with query parameters it will REPLACE a matching element with the inbound payload. If there are multiple matches you will get a BAD REQUEST (400) response.
+
+If you PUT an array, the entire object will be replaced.
+
+IF you DELETE with query parameters only the objects that match your criteria will be deleted.
+
+If you DELETE with no query parameters the property or field will be replaced by whatever the default is for that Type.
+
+Remaining work:
+
+- Handle the calls in a slightly more HTTP compliant array (validate empty if POST)
+- Remove Copy Pasta	
+- Test query parameters other than GET
+- Performance benchmarking
