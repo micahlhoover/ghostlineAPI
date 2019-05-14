@@ -18,6 +18,9 @@ namespace ElkDogModel
 
         public static List<ElkDog> SecretElkDogs { get; set; }
 
+        [GhostWrite, GhostRead]
+        public static String _locationCity;
+
         public ElkDogManager()
         {
 
@@ -109,10 +112,25 @@ namespace ElkDogModel
                     return true;
                 return false;
             };
+            //apiServer.Validator = delegate (HttpListenerRequest req)
+            //{
+            //    var result = new ValidationResponse();
+            //    result.Success = false;
+            //    result.Messages = new List<ValidationMessage> {
+            //        new ValidationMessage {
+            //            Code = "F128",
+            //            Message = "Request contains insufficent number of query parameters.",
+            //            ValidationType = ValidationMessageType.Failure
+            //        }
+            //    };
+            //    return result;
+            //};
             apiServer.After = delegate ()
             {
                 Console.WriteLine("Current: " + UntrainedElkDogs[0].Name + " can fly? " + UntrainedElkDogs[0].CanFly);
             };
+
+            _locationCity = "Raleigh";
 
             apiServer.SetupAndStartServer();
 

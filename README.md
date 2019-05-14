@@ -36,7 +36,25 @@ Authentication can optionally be enabled like this:
 
 And just like that you can customize authentication without any changes to the server code.
 
+Validation checks are as simple as:
+
+    apiServer.Validator = delegate (HttpListenerRequest req)
+    {
+        var result = new ValidationResponse();
+        result.Success = false;
+        result.Messages = new List<ValidationMessage> {
+            new ValidationMessage {
+                Code = "F128",
+                Message = "Request contains insufficent number of query parameters.",
+                ValidationType = ValidationMessageType.Failure
+            }
+        };
+        return result;
+    };
+
 You can also add a Before delegate to populate a property with database results before the API server pulls the results. Make sure you refresh afterwords in your delegate.
+
+You can also populate an After delegate with any post-request logic that needs to be executed.
 
 Item retrievable with open query patterns is available.
 

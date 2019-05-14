@@ -33,6 +33,7 @@ namespace GhostLineAPI
         public Func<HttpListenerRequest, bool> Authenticator { get; set; }
         public Action Before { get; set; }
         public Action After { get; set; }
+        public Func<HttpListenerRequest, ValidationResponse> Validator { get; set; }
 
         public GhostLineAPIServer()
         {
@@ -56,7 +57,12 @@ namespace GhostLineAPI
 
         public void SetupAndStartServer()
         {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             ReflectServableItems();
+            sw.Stop();
+            //Debug.WriteLine("Reflection set up: " + sw.ElapsedMilliseconds);
+            Console.WriteLine($"Reflection set up: {sw.ElapsedMilliseconds} milliseconds");
 
             if (!HttpListener.IsSupported)
             {
@@ -82,39 +88,87 @@ namespace GhostLineAPI
             }
 
             bool done = false;
-            while(done == false)
+            bool showCounter = false;
+            long counter = 0;
+
+
+            while (done == false)
             {
                 listener.Start();
-                Console.WriteLine("Listening...");
-                // Note: The GetContext method blocks while waiting for a request. 
-
                 HttpListenerContext context = listener.GetContext();
                 HttpListenerRequest request = context.Request;
-
-                string payload = string.Empty;
-                using (var reader = new StreamReader(request.InputStream, Encoding.UTF8))
-                {
-                    payload = reader.ReadToEnd();
-                    // Do something with the value
-                }
-
-                if (payload.Equals("DONE"))
-                {
-                    done = true;
-                }
-
-                string responseString = "No response. Unable to pair request to existing data.";
-
-                // Obtain a response object.
                 HttpListenerResponse response = context.Response;
 
-                // TODO: add filters
-
-                if (Authenticator == null || Authenticator(request))
+                try
                 {
-                    if (Before != null)
-                        Before();
+                    done = HandleOneRequest(listener, context, request, response);
+                } catch(Exception ex)
+                {
+                    Console.WriteLine("Got exception: " + ex.Message);
+                    
+                    String responseString = "The request was not valid.";
+                    byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
+                    response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    response.ContentLength64 = buffer.Length;
+                    System.IO.Stream output = response.OutputStream;
+                    output.Write(buffer, 0, buffer.Length);
+                    output.Close();
+                }
 
+                Console.WriteLine($"Counter: {counter}");
+                counter++;
+            }
+
+            listener.Stop();
+        }
+
+        private bool HandleOneRequest(HttpListener listener, HttpListenerContext context, HttpListenerRequest request, HttpListenerResponse response)
+        {
+            bool done = false;
+            
+            Console.WriteLine("Listening...");
+            // Note: The GetContext method blocks while waiting for a request. 
+
+            Stopwatch sw2 = new Stopwatch();
+            sw2.Start();
+
+            string payload = string.Empty;
+            using (var reader = new StreamReader(request.InputStream, Encoding.UTF8))
+            {
+                payload = reader.ReadToEnd();
+                // Do something with the value
+            }
+
+            if (payload.Equals("DONE"))
+            {
+                done = true;
+            }
+
+            string responseString = "No response. Unable to pair request to existing data.";
+
+            if (Authenticator == null || Authenticator(request))
+            {
+                if (Before != null)
+                    Before();
+
+                if (Validator != null)
+                {
+                    var validationResponse = Validator(request);
+                    if (!validationResponse.Success ||
+                        validationResponse.Messages.Any(m => m.ValidationType == ValidationMessageType.Failure))
+                    {
+                        response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        StringBuilder responseInfo = new StringBuilder();
+                        foreach (var message in validationResponse.Messages)
+                        {
+                            responseInfo.Append($"{Enum.GetName(typeof(ValidationMessageType), message.ValidationType)} {message.Message} ");
+                        }
+                        responseString = responseInfo.ToString();
+                    }
+                }
+
+                if (response.StatusCode != (int)HttpStatusCode.BadRequest)
+                {
                     // get the value
                     var name = request.Url;     // {http://127.0.0.1:19001/UntrainedElkDogs}
                     var tokens = request.Url.ToString().Split('/');
@@ -174,12 +228,13 @@ namespace GhostLineAPI
                         Type serviceItemType = serviceObj.Type;
 
                         var thisObj = JsonConvert.DeserializeObject(payload, serviceItemType);
-                        bool isList = IsList(thisObj);
+                        bool listWasSent = IsList(thisObj);
+                        bool currentlyList = IsList(serviceItemType);
 
                         if (serviceObj.CanWrite)
                         {
                             //if (filterKeys.AllKeys.Count() == 0)
-                            if (isList)
+                            if (listWasSent)
                             {
                                 if (serviceObj.PropertyInfo != null)    // property
                                 {
@@ -196,35 +251,54 @@ namespace GhostLineAPI
                             }
                             else
                             {
-                                // not a list ... must be sending one item ... should be new since its a POST
-                                var innerType = serviceObj.Object.GetType().GetGenericArguments()[0];
-                                var enumerables = (IEnumerable<object>)serviceObj.Object;
-                                var results = new List<object>();
-                                results.AddRange(enumerables);
-                                results.Add(thisObj);
-
-                                //var target = results.ConvertAll(x => new TargetType { SomeValue = x.SomeValue });
-                                //var target = re
-
-                                Type targetType = typeof(List<>).MakeGenericType(innerType);
-                                var outputList = (IList)Activator.CreateInstance(targetType);
-
-                                foreach(var result in results)
+                                // not a list ... should be new since its a POST
+                                if (currentlyList)
                                 {
-                                    outputList.Add(result);
+                                    // they didn't send a list, but the reflected element is a list ... append it
+                                    var innerType = serviceObj.Object.GetType().GetGenericArguments()[0];
+                                    var enumerables = (IEnumerable<object>)serviceObj.Object;
+                                    var results = new List<object>();
+                                    results.AddRange(enumerables);
+                                    results.Add(thisObj);
+
+                                    //var target = results.ConvertAll(x => new TargetType { SomeValue = x.SomeValue });
+                                    //var target = re
+
+                                    Type targetType = typeof(List<>).MakeGenericType(innerType);
+                                    var outputList = (IList)Activator.CreateInstance(targetType);
+
+                                    foreach (var result in results)
+                                    {
+                                        outputList.Add(result);
+                                    }
+
+                                    if (serviceObj.PropertyInfo != null)    // property
+                                    {
+                                        serviceObj.PropertyInfo.SetValue(serviceObj.Object, outputList);
+                                        // OK ... it really is set now ... but it won't show up in the next GET unless we update the reference
+                                        serviceObj.Object = serviceObj.PropertyInfo.GetValue(_parentObj);
+                                    }
+                                    else    // field
+                                    {
+                                        serviceObj.FieldInfo.SetValue(serviceObj.Object, outputList);
+                                        // OK ... it really is set now ... but it won't show up in the next GET unless we update the reference
+                                        serviceObj.Object = serviceObj.FieldInfo.GetValue(_parentObj);
+                                    }
                                 }
-
-                                if (serviceObj.PropertyInfo != null)    // property
+                                else
                                 {
-                                    serviceObj.PropertyInfo.SetValue(serviceObj.Object, outputList);
-                                    // OK ... it really is set now ... but it won't show up in the next GET unless we update the reference
-                                    serviceObj.Object = serviceObj.PropertyInfo.GetValue(_parentObj);
-                                }
-                                else    // field
-                                {
-                                    serviceObj.FieldInfo.SetValue(serviceObj.Object, outputList);
-                                    // OK ... it really is set now ... but it won't show up in the next GET unless we update the reference
-                                    serviceObj.Object = serviceObj.FieldInfo.GetValue(_parentObj);
+                                    if (serviceObj.PropertyInfo != null)    // property
+                                    {
+                                        serviceObj.PropertyInfo.SetValue(serviceObj.Object, thisObj);
+                                        // OK ... it really is set now ... but it won't show up in the next GET unless we update the reference
+                                        serviceObj.Object = serviceObj.PropertyInfo.GetValue(_parentObj); // this ref now points to where it is in the parent
+                                    }
+                                    else    // field
+                                    {
+                                        serviceObj.FieldInfo.SetValue(serviceObj.Object, thisObj);
+                                        // OK ... it really is set now ... but it won't show up in the next GET unless we update the reference
+                                        serviceObj.Object = serviceObj.FieldInfo.GetValue(_parentObj); // this ref now points to where it is in the parent
+                                    }
                                 }
                             }
                             responseString = "OK";
@@ -242,12 +316,13 @@ namespace GhostLineAPI
                         Type serviceItemType = serviceObj.Type;
 
                         var thisObj = JsonConvert.DeserializeObject(payload, serviceItemType);
-                        bool isList = IsList(thisObj);
+                        bool listWasSent = IsList(thisObj);
+                        bool currentlyList = IsList(serviceItemType);
 
                         if (serviceObj.CanWrite)
                         {
                             //if (filterKeys.AllKeys.Count() == 0)
-                            if (!isList)
+                            if (!listWasSent)
                             {
                                 if (serviceObj.PropertyInfo != null)    // property
                                 {
@@ -264,74 +339,96 @@ namespace GhostLineAPI
                             }
                             else
                             {
-                                // not a list ... must be sending one item ... COULD be new since its a POST
-                                // if query parameter ... it must be an update TODO: add validation to make sure
-                                var innerType = serviceObj.Object.GetType().GetGenericArguments()[0];
-                                var enumerables = (IEnumerable<object>)serviceObj.Object;
-                                var results = new List<object>();
-                                int leftOutCounter = 0; // cancel the whole thing if more than one is left out according to query
+                                // not a list ... 
+                                if (currentlyList)
+                                {
+                                    // if query parameter ... it must be an update TODO: add validation to make sure
+                                    var innerType = serviceObj.Object.GetType().GetGenericArguments()[0];
+                                    var enumerables = (IEnumerable<object>)serviceObj.Object;
+                                    var results = new List<object>();
+                                    int leftOutCounter = 0; // cancel the whole thing if more than one is left out according to query
 
-                                if (filterKeys.AllKeys.Count() == 0)
-                                {
-                                    results.AddRange(enumerables);
-                                    results.Add(thisObj);
-                                } else
-                                {
-                                    // there's a query parameter, so treat this as an update for one item
-                                    // only add if it is NOT matched ... and then add the inbound item separately
-                                    foreach (var item in enumerables)
+                                    if (filterKeys.AllKeys.Count() == 0)
                                     {
-                                        bool allMatched = true;
-                                        foreach (var attributeName in filterKeys.AllKeys)
+                                        results.AddRange(enumerables);
+                                        results.Add(thisObj);
+                                    }
+                                    else
+                                    {
+                                        // there's a query parameter, so treat this as an update for one item
+                                        // only add if it is NOT matched ... and then add the inbound item separately
+                                        foreach (var item in enumerables)
                                         {
-                                            var candidateValObject = item.GetType().GetProperty(attributeName).GetValue(item, null);
-                                            var filterKeyVal = filterKeys[attributeName];
-                                            if (!candidateValObject.ToString().Equals(filterKeyVal, StringComparison.InvariantCultureIgnoreCase))
+                                            bool allMatched = true;
+                                            foreach (var attributeName in filterKeys.AllKeys)
                                             {
-                                                allMatched = false;
+                                                var candidateValObject = item.GetType().GetProperty(attributeName).GetValue(item, null);
+                                                var filterKeyVal = filterKeys[attributeName];
+                                                if (!candidateValObject.ToString().Equals(filterKeyVal, StringComparison.InvariantCultureIgnoreCase))
+                                                {
+                                                    allMatched = false;
+                                                }
+                                            }
+                                            if (!allMatched)
+                                            {
+                                                results.Add(item);
+                                            }
+                                            else
+                                            {
+                                                leftOutCounter++;
                                             }
                                         }
-                                        if (!allMatched)
-                                        {
-                                            results.Add(item);
-                                        } else
-                                        {
-                                            leftOutCounter++;
-                                        }
+                                        // add the new item
+                                        results.Add(thisObj);
                                     }
-                                    // add the new item
-                                    results.Add(thisObj);
+
+                                    Type targetType = typeof(List<>).MakeGenericType(innerType);
+                                    var outputList = (IList)Activator.CreateInstance(targetType);
+
+                                    foreach (var result in results)
+                                    {
+                                        outputList.Add(result);
+                                    }
+
+                                    if (leftOutCounter <= 1)
+                                    {
+                                        if (serviceObj.PropertyInfo != null)    // property
+                                        {
+                                            serviceObj.PropertyInfo.SetValue(serviceObj.Object, outputList);
+                                            // OK ... it really is set now ... but it won't show up in the next GET unless we update the reference
+                                            serviceObj.Object = serviceObj.PropertyInfo.GetValue(_parentObj);
+                                        }
+                                        else    // field
+                                        {
+                                            serviceObj.FieldInfo.SetValue(serviceObj.Object, outputList);
+                                            // OK ... it really is set now ... but it won't show up in the next GET unless we update the reference
+                                            serviceObj.Object = serviceObj.FieldInfo.GetValue(_parentObj);
+                                        }
+
+                                        responseString = "OK";
+                                        response.StatusCode = (int)HttpStatusCode.Created;
+                                    }
+                                    else
+                                    {
+                                        responseString = "Looks like you sent a query parameter that matched multiple items";
+                                        response.StatusCode = (int)HttpStatusCode.BadRequest;
+                                    }
                                 }
-
-                                Type targetType = typeof(List<>).MakeGenericType(innerType);
-                                var outputList = (IList)Activator.CreateInstance(targetType);
-
-                                foreach (var result in results)
+                                else
                                 {
-                                    outputList.Add(result);
-                                }
-
-                                if (leftOutCounter <= 1)
-                                {
+                                    // they sent a non-list and a non-list is there
                                     if (serviceObj.PropertyInfo != null)    // property
                                     {
-                                        serviceObj.PropertyInfo.SetValue(serviceObj.Object, outputList);
+                                        serviceObj.PropertyInfo.SetValue(serviceObj.Object, thisObj);
                                         // OK ... it really is set now ... but it won't show up in the next GET unless we update the reference
-                                        serviceObj.Object = serviceObj.PropertyInfo.GetValue(_parentObj);
+                                        serviceObj.Object = serviceObj.PropertyInfo.GetValue(_parentObj); // this ref now points to where it is in the parent
                                     }
                                     else    // field
                                     {
-                                        serviceObj.FieldInfo.SetValue(serviceObj.Object, outputList);
+                                        serviceObj.FieldInfo.SetValue(serviceObj.Object, thisObj);
                                         // OK ... it really is set now ... but it won't show up in the next GET unless we update the reference
-                                        serviceObj.Object = serviceObj.FieldInfo.GetValue(_parentObj);
+                                        serviceObj.Object = serviceObj.FieldInfo.GetValue(_parentObj); // this ref now points to where it is in the parent
                                     }
-
-                                    responseString = "OK";
-                                    response.StatusCode = (int)HttpStatusCode.Created;
-                                } else
-                                {
-                                    responseString = "Looks like you sent a query parameter that matched multiple items";
-                                    response.StatusCode = (int)HttpStatusCode.BadRequest;
                                 }
                             }
                             response.StatusCode = (int)HttpStatusCode.Created;
@@ -350,7 +447,7 @@ namespace GhostLineAPI
                             {
                                 // just obliterate it with the default
                                 //default();
-                                var thisObj = (serviceObj.Type.IsValueType? Activator.CreateInstance(serviceObj.Type) : null);
+                                var thisObj = (serviceObj.Type.IsValueType ? Activator.CreateInstance(serviceObj.Type) : null);
                                 //var thisObj = default(serviceObj.);
                                 if (serviceObj.PropertyInfo != null)    // property
                                 {
@@ -364,7 +461,8 @@ namespace GhostLineAPI
                                     // OK ... it really is set now ... but it won't show up in the next GET unless we update the reference
                                     serviceObj.Object = serviceObj.FieldInfo.GetValue(_parentObj); // this ref now points to where it is in the parent
                                 }
-                            } else
+                            }
+                            else
                             {
                                 // delete with query parameters
                                 Type serviceItemType = serviceObj.Type;
@@ -398,7 +496,7 @@ namespace GhostLineAPI
                                     if (!allMatched)
                                     {
                                         outputList.Add(existingItem);
-                                    }                                    
+                                    }
                                 }
                             }
                             responseString = "Deleted";
@@ -415,26 +513,31 @@ namespace GhostLineAPI
                         responseString = "This http method is not enabled at this time.";
                         response.StatusCode = (int)HttpStatusCode.Unauthorized;
                     }
-                } else
-                {
-                    response.StatusCode = (int)HttpStatusCode.Forbidden;
                 }
 
-                if (After != null)
-                    After();
-
-                // Construct a response.
-
-                byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
-                // Get a response stream and write the response to it.
-                response.ContentLength64 = buffer.Length;
-                System.IO.Stream output = response.OutputStream;
-                output.Write(buffer, 0, buffer.Length);
-                // You must close the output stream.
-                output.Close();
+            }
+            else
+            {
+                response.StatusCode = (int)HttpStatusCode.Forbidden;
             }
 
-            listener.Stop();
+            if (After != null)
+                After();
+
+            // Construct a response.
+
+            byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
+            // Get a response stream and write the response to it.
+            response.ContentLength64 = buffer.Length;
+            System.IO.Stream output = response.OutputStream;
+            output.Write(buffer, 0, buffer.Length);
+            // You must close the output stream.
+            output.Close();
+
+            sw2.Stop();
+            Console.WriteLine($"Response process time: {sw2.ElapsedMilliseconds} milliseconds");
+
+            return done;
         }
 
         public void Refresh()
@@ -465,7 +568,6 @@ namespace GhostLineAPI
             {
                 foreach (var typeObj in assembly.GetTypes())
                 {
-//                    PropertyInfo[] props = typeObj.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);   // this clips out everything .. ?
                     PropertyInfo[] props = typeObj.GetProperties();
                     foreach (PropertyInfo prop in props)
                     {
@@ -484,14 +586,11 @@ namespace GhostLineAPI
                                 };
                                 servableItem.GenerateId();
 
-                                // check to see if this is already a servable item
-                                //if (_servableItems.ContainsKey(servableItem.Id))
+
                                 var checkItem = _servableItems.FirstOrDefault(si => si.Id == servableItem.Id);
-                                //if (_servableItems.Any( si => si.Id == servableItem.Id))
+
                                 if (checkItem != null)
                                 {
-                                    //servableItem = _servableItems[servableItem.Id];
-                                    //servableItem = _servableItems.First(si => si.Id == servableItem.Id);
                                     servableItem = checkItem;
                                 }
                                 else

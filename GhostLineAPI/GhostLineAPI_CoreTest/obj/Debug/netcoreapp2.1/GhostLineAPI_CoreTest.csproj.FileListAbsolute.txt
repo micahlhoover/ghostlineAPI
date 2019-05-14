@@ -6,7 +6,9 @@ C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineA
 C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\GhostLineAPI_CoreTest\bin\Debug\netcoreapp2.1\GhostLineAPI_CoreTest.runtimeconfig.dev.json
 C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\GhostLineAPI_CoreTest\bin\Debug\netcoreapp2.1\GhostLineAPI_CoreTest.dll
 C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\GhostLineAPI_CoreTest\bin\Debug\netcoreapp2.1\GhostLineAPI_CoreTest.pdb
+C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\GhostLineAPI_CoreTest\bin\Debug\netcoreapp2.1\ElkDogModel.dll
 C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\GhostLineAPI_CoreTest\bin\Debug\netcoreapp2.1\GhostLineAPI.dll
+C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\GhostLineAPI_CoreTest\bin\Debug\netcoreapp2.1\ElkDogModel.pdb
 C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\GhostLineAPI_CoreTest\bin\Debug\netcoreapp2.1\GhostLineAPI.pdb
 C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\GhostLineAPI_CoreTest\obj\Debug\netcoreapp2.1\GhostLineAPI_CoreTest.csprojAssemblyReference.cache
 C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\GhostLineAPI_CoreTest\obj\Debug\netcoreapp2.1\GhostLineAPI_CoreTest.csproj.CoreCompileInputs.cache
@@ -15,5 +17,3 @@ C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineA
 C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\GhostLineAPI_CoreTest\obj\Debug\netcoreapp2.1\GhostLineAPI_CoreTest.csproj.CopyComplete
 C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\GhostLineAPI_CoreTest\obj\Debug\netcoreapp2.1\GhostLineAPI_CoreTest.dll
 C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\GhostLineAPI_CoreTest\obj\Debug\netcoreapp2.1\GhostLineAPI_CoreTest.pdb
-C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\GhostLineAPI_CoreTest\bin\Debug\netcoreapp2.1\ElkDogModel.dll
-C:\Users\ryan.l.hoover\Desktop\App Projects\ghostLineAPI\ghostlineAPI\GhostLineAPI\GhostLineAPI_CoreTest\bin\Debug\netcoreapp2.1\ElkDogModel.pdb
