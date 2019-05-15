@@ -193,24 +193,8 @@ namespace GhostLineAPI
                             {
                                 var innerType = serviceObj.Object.GetType().GetGenericArguments()[0];
                                 var enumerables = (IEnumerable<object>)serviceObj.Object;
-                                var results = new List<object>();
-                                foreach (var item in enumerables)
-                                {
-                                    bool allMatched = true;
-                                    foreach (var attributeName in filterKeys.AllKeys)
-                                    {
-                                        var candidateValObject = item.GetType().GetProperty(attributeName).GetValue(item, null);
-                                        var filterKeyVal = filterKeys[attributeName];
-                                        if (!candidateValObject.ToString().Equals(filterKeyVal, StringComparison.InvariantCultureIgnoreCase))
-                                        {
-                                            allMatched = false;
-                                        }
-                                    }
-                                    if (allMatched)
-                                    {
-                                        results.Add(item);
-                                    }
-                                }
+                                var results = Utilities.GetMatchingItems(filterKeys, enumerables, innerType);
+
                                 responseString = JsonConvert.SerializeObject(results);
                                 response.StatusCode = (int)HttpStatusCode.OK;
                             }
@@ -251,7 +235,7 @@ namespace GhostLineAPI
                             }
                             else
                             {
-                                // not a list ... should be new since its a POST
+                                // list was not sent
                                 if (currentlyList)
                                 {
                                     // they didn't send a list, but the reflected element is a list ... append it
@@ -260,9 +244,6 @@ namespace GhostLineAPI
                                     var results = new List<object>();
                                     results.AddRange(enumerables);
                                     results.Add(thisObj);
-
-                                    //var target = results.ConvertAll(x => new TargetType { SomeValue = x.SomeValue });
-                                    //var target = re
 
                                     Type targetType = typeof(List<>).MakeGenericType(innerType);
                                     var outputList = (IList)Activator.CreateInstance(targetType);
@@ -345,7 +326,7 @@ namespace GhostLineAPI
                                     // if query parameter ... it must be an update TODO: add validation to make sure
                                     var innerType = serviceObj.Object.GetType().GetGenericArguments()[0];
                                     var enumerables = (IEnumerable<object>)serviceObj.Object;
-                                    var results = new List<object>();
+                                    List<object> results = null;
                                     int leftOutCounter = 0; // cancel the whole thing if more than one is left out according to query
 
                                     if (filterKeys.AllKeys.Count() == 0)
@@ -355,31 +336,8 @@ namespace GhostLineAPI
                                     }
                                     else
                                     {
-                                        // there's a query parameter, so treat this as an update for one item
-                                        // only add if it is NOT matched ... and then add the inbound item separately
-                                        foreach (var item in enumerables)
-                                        {
-                                            bool allMatched = true;
-                                            foreach (var attributeName in filterKeys.AllKeys)
-                                            {
-                                                var candidateValObject = item.GetType().GetProperty(attributeName).GetValue(item, null);
-                                                var filterKeyVal = filterKeys[attributeName];
-                                                if (!candidateValObject.ToString().Equals(filterKeyVal, StringComparison.InvariantCultureIgnoreCase))
-                                                {
-                                                    allMatched = false;
-                                                }
-                                            }
-                                            if (!allMatched)
-                                            {
-                                                results.Add(item);
-                                            }
-                                            else
-                                            {
-                                                leftOutCounter++;
-                                            }
-                                        }
-                                        // add the new item
-                                        results.Add(thisObj);
+                                        results = Utilities.GetMatchingItems(filterKeys, enumerables, innerType);
+                                        leftOutCounter = enumerables.Count() - results.Count();
                                     }
 
                                     Type targetType = typeof(List<>).MakeGenericType(innerType);
