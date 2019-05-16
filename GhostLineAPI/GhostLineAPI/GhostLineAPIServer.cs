@@ -13,6 +13,23 @@ using System.Text;
 
 namespace GhostLineAPI
 {
+    public enum LogType
+    {
+        None = 0,
+        Trace = 1,
+        Console = 2,
+        Debug = 3
+    }
+
+    public enum LogLevel
+    {
+        None = 0,
+        Critical = 1,
+        Error = 2,
+        Info = 3,
+        Verbose = 4
+    }
+
     public class GhostLineAPIServer
     {
         private List<Assembly> _monitoredAssemblies;
@@ -34,6 +51,8 @@ namespace GhostLineAPI
         public Action Before { get; set; }
         public Action After { get; set; }
         public Func<HttpListenerRequest, ValidationResponse> Validator { get; set; }
+        public LogType LogType { get; set; }
+        public LogLevel LogLevel { get; set; }
 
         public GhostLineAPIServer()
         {
@@ -42,10 +61,11 @@ namespace GhostLineAPI
             _servableItems = new List<ServableItem>();
             Authenticator = null;
 
-            if (String.IsNullOrEmpty(Address))
-            {
-                Address = "127.0.0.1";
-            }
+            Address = "127.0.0.1";
+            Port = 19001;
+
+            LogType = LogType.Console;
+            LogLevel = LogLevel.Error;
         }
 
         public bool IsList(object o)
@@ -61,12 +81,11 @@ namespace GhostLineAPI
             sw.Start();
             ReflectServableItems();
             sw.Stop();
-            //Debug.WriteLine("Reflection set up: " + sw.ElapsedMilliseconds);
-            Console.WriteLine($"Reflection set up: {sw.ElapsedMilliseconds} milliseconds");
+            Log($"Reflection set up: {sw.ElapsedMilliseconds} milliseconds", LogLevel.Verbose);
 
             if (!HttpListener.IsSupported)
             {
-                Console.WriteLine("Windows XP SP2 or Server 2003 is required to use the HttpListener class.");
+                Log("Windows XP SP2 or Server 2003 is required to use the HttpListener class.", LogLevel.Error);
                 return;
             }
             HttpListener listener = new HttpListener();
@@ -87,11 +106,9 @@ namespace GhostLineAPI
                 listener.Prefixes.Add(s);
             }
 
+            Log($"Listening on http://{Address}:{Port}", LogLevel.Info);
+
             bool done = false;
-            bool showCounter = false;
-            long counter = 0;
-
-
             while (done == false)
             {
                 listener.Start();
@@ -104,7 +121,7 @@ namespace GhostLineAPI
                     done = HandleOneRequest(listener, context, request, response);
                 } catch(Exception ex)
                 {
-                    Console.WriteLine("Got exception: " + ex.Message);
+                    Log("Got exception: " + ex.Message, LogLevel.Error);
                     
                     String responseString = "The request was not valid.";
                     byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
@@ -113,10 +130,8 @@ namespace GhostLineAPI
                     System.IO.Stream output = response.OutputStream;
                     output.Write(buffer, 0, buffer.Length);
                     output.Close();
+                    Log($"Wrote: {responseString} with Http Code: {response.StatusCode}", LogLevel.Verbose);
                 }
-
-                Console.WriteLine($"Counter: {counter}");
-                counter++;
             }
 
             listener.Stop();
@@ -125,8 +140,6 @@ namespace GhostLineAPI
         private bool HandleOneRequest(HttpListener listener, HttpListenerContext context, HttpListenerRequest request, HttpListenerResponse response)
         {
             bool done = false;
-            
-            Console.WriteLine("Listening...");
             // Note: The GetContext method blocks while waiting for a request. 
 
             Stopwatch sw2 = new Stopwatch();
@@ -440,7 +453,6 @@ namespace GhostLineAPI
                                 foreach (var existingItem in existingItems)
                                 {
                                     // only leave it out it if it meets the query param criteria!
-
                                     bool allMatched = true;
                                     foreach (var attributeName in filterKeys.AllKeys)
                                     {
@@ -491,9 +503,10 @@ namespace GhostLineAPI
             output.Write(buffer, 0, buffer.Length);
             // You must close the output stream.
             output.Close();
+            Log($"Wrote: {responseString} with Http Code: {response.StatusCode}", LogLevel.Verbose);
 
             sw2.Stop();
-            Console.WriteLine($"Response process time: {sw2.ElapsedMilliseconds} milliseconds");
+            Log($"Response process time: {sw2.ElapsedMilliseconds} milliseconds", LogLevel.Info);
 
             return done;
         }
@@ -511,8 +524,7 @@ namespace GhostLineAPI
             // check out the assemblies
             foreach (var assembly in assemblies)
             {
-                Debug.WriteLine("Assembly found: " + assembly.FullName);
-                //Console.WriteLine("Assembly found: " + assembly.FullName);
+                Log("Assembly found: " + assembly.FullName, LogLevel.Verbose);
                 if (!assembly.FullName.StartsWith("System.") 
                     && !assembly.FullName.Equals("GhostLineAPI")
                     && !assembly.FullName.StartsWith("Microsoft"))
@@ -556,7 +568,9 @@ namespace GhostLineAPI
                                     // flesh out the rest
                                     if (_parentObj == null)
                                     {
-                                        throw new ArgumentException("Must pass instance object (usually \"this\") as ParentObj when annotating properties due to .NET reflection access restrictions.");
+                                        String message = "Must pass instance object (usually \"this\") when annotating properties due to .NET reflection access restrictions.";
+                                        Log(message, LogLevel.Critical);
+                                        throw new ArgumentException(message);
                                     }
                                     servableItem.Object = prop.GetValue(_parentObj);
                                     servableItem.PropertyInfo = prop;
@@ -604,7 +618,9 @@ namespace GhostLineAPI
                                     // flesh out the rest
                                     if (_parentObj == null)
                                     {
-                                        throw new ArgumentException("Must pass instance object (usually \"this\") when annotating properties due to .NET reflection access restrictions.");
+                                        String message = "Must pass instance object (usually \"this\") when annotating properties due to .NET reflection access restrictions.";
+                                        Log(message, LogLevel.Critical);
+                                        throw new ArgumentException(message);
                                     }
                                     servableItem.Object = field.GetValue(field.Name);
                                     servableItem.FieldInfo = field;
@@ -627,6 +643,25 @@ namespace GhostLineAPI
                 }
             }
             return _servableItems;
+        }
+
+        private void Log(String message, LogLevel logLevel = LogLevel.Info)
+        {
+            if (logLevel > LogLevel)
+                return;
+
+            String timedMessage = (logLevel < LogLevel.Info) ? message : $"{DateTime.Now.ToString()}: {message}";
+            if (LogType == LogType.Console)
+            {
+                Console.WriteLine(message);
+            } else if (LogType == LogType.Trace)
+            {
+                Trace.WriteLine(message);
+            }
+            else if (LogType == LogType.Debug)
+            {
+                Debug.WriteLine(message);
+            }
         }
     }
 }
