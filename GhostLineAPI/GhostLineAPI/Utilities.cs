@@ -32,6 +32,21 @@ namespace GhostLineAPI
             return returnableItems;
         }
 
+        public static void SetOrOverwriteValue(ServableItem serviceObj, object thisObj, object parentObj)
+        {
+            if (serviceObj.PropertyInfo != null)    // property
+            {
+                serviceObj.PropertyInfo.SetValue(serviceObj.Object, thisObj);
+                // OK ... it really is set now ... but it won't show up in the next GET unless we update the reference
+                serviceObj.Object = serviceObj.PropertyInfo.GetValue(parentObj); // this ref now points to where it is in the parent
+            }
+            else    // field
+            {
+                serviceObj.FieldInfo.SetValue(serviceObj.Object, thisObj);
+                // OK ... it really is set now ... but it won't show up in the next GET unless we update the reference
+                serviceObj.Object = serviceObj.FieldInfo.GetValue(parentObj); // this ref now points to where it is in the parent
+            }
+        }
     }
 
 }
