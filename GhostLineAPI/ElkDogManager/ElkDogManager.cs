@@ -10,11 +10,14 @@ namespace ElkDogModel
 {
     public class ElkDogManager
     {
-        [GhostWrite, GhostRead]
+        [GhostReadWrite]
         public static List<ElkDog> UntrainedElkDogs { get; set; }
 
-        [GhostWrite, GhostRead]
+        [GhostRead(DisableVersioning = false, OverrideName = "TrainedElkDogs", Version = "V1")]
         public static List<ElkDog> TrainedElkDogs { get; set; }
+
+        [GhostRead(DisableVersioning = false, OverrideName = "TrainedElkDogs", Version = "V2")]
+        public static List<ElkDog> TrainedElkDogsV2 { get; set; }
 
         public static List<ElkDog> SecretElkDogs { get; set; }
 
@@ -23,7 +26,7 @@ namespace ElkDogModel
 
         public ElkDogManager()
         {
-
+            //throw new Exception("Must add support in the Server reflect method for the attribute changes above.");
         }
 
         public void Manage()
@@ -48,6 +51,37 @@ namespace ElkDogModel
 
             TrainedElkDogs = new List<ElkDog>();
             foreach (var index in Enumerable.Range(0, 2))
+            {
+                ElkDog elkDog = new ElkDog
+                {
+                    Name = namesList.ElementAt(rnd.Next(0, namesList.Count)),
+                    MarketValue = 300,
+                    CanFly = false,
+                    Role = ElkDog.ElkDogRole.None
+                };
+                ElkDog.ElkDogRole role = ElkDog.ElkDogRole.GroundDelivery;
+                switch (rnd.Next(0, 3))
+                {
+                    case 0:
+                        role = ElkDog.ElkDogRole.AirDelivery;
+                        elkDog.CanFly = true;
+                        break;
+                    case 1:
+                        role = ElkDog.ElkDogRole.SeaDelivery;
+                        break;
+                    case 2:
+                        role = ElkDog.ElkDogRole.HumanTransportation;
+                        break;
+                    default:
+                    case 3:
+                        role = ElkDog.ElkDogRole.GroundDelivery;
+                        break;
+                }
+                TrainedElkDogs.Add(elkDog);
+            }
+
+            TrainedElkDogsV2 = new List<ElkDog>();
+            foreach (var index in Enumerable.Range(0, 3))
             {
                 ElkDog elkDog = new ElkDog
                 {

@@ -66,7 +66,8 @@ namespace GhostLineAPI
             Port = 19001;
 
             LogType = LogType.Console;
-            LogLevel = LogLevel.Error;
+            //LogLevel = LogLevel.Error;        // TODO: put this back
+            LogLevel = LogLevel.Info;
         }
 
         public void SetupAndStartServer()
@@ -88,15 +89,24 @@ namespace GhostLineAPI
            {
                if (!String.IsNullOrEmpty(si.PropertyName))
                {
-                   return $"http://{Address}:{Port}/{si.PropertyName}/";
+                   String name = !String.IsNullOrWhiteSpace(si.OverriddenName) ? si.OverriddenName : si.PropertyName;
+                   if (String.IsNullOrWhiteSpace(si.Version))
+                       return $"http://{Address}:{Port}/{si.PropertyName}/";
+                   else
+                       return $"http://{Address}:{Port}/{si.Version}/{name}/";
                }
                else
                {
-                   return $"http://{Address}:{Port}/{si.FieldName}/";
+                   String name = !String.IsNullOrWhiteSpace(si.OverriddenName) ? si.OverriddenName : si.FieldName;
+                   if (String.IsNullOrWhiteSpace(si.Version))
+                       return $"http://{Address}:{Port}/{si.FieldName}/";
+                   else
+                       return $"http://{Address}:{Port}/{si.Version}/{name}/";
                }
            }).ToList();
             foreach (string s in prefixes)
             {
+                Log($"Endpoint: {s}", LogLevel.Info);
                 listener.Prefixes.Add(s);
             }
 
@@ -109,6 +119,8 @@ namespace GhostLineAPI
                 HttpListenerContext context = listener.GetContext();
                 HttpListenerRequest request = context.Request;
                 HttpListenerResponse response = context.Response;
+
+                Log($"Received request: {request.Url}", LogLevel.Info);
 
                 try
                 {
@@ -177,19 +189,71 @@ namespace GhostLineAPI
                 if (response.StatusCode != (int)HttpStatusCode.BadRequest)
                 {
                     // get the value
-                    var name = request.Url;     // {http://127.0.0.1:19001/UntrainedElkDogs}
-                    var tokens = request.Url.ToString().Split('/');
-                    var lastToken = tokens[tokens.Length - 1];  // the last one should correspond to the property or object name
-                    if (lastToken.Contains('?'))
-                    {
-                        lastToken = lastToken.Split("?")[0];
-                    }
-                    var filterKeys = request.QueryString;
-                    var serviceObj = _servableItems.Where(si => si.AccessName.Equals(lastToken, StringComparison.InvariantCultureIgnoreCase)).First();
+                    var name = request.Url.ToString();     // {http://127.0.0.1:19001/UntrainedElkDogs} or {http://127.0.0.1:19001/v1/UntrainedElkDogs}
+                    name = name.TrimEnd('/');
+                    //if (name.EndsWith("//"))
+                    //{
+                    //    name = name.TrimEnd('/');
+                    //}
+                    var tokens = name.Split('/');
 
-                    var methodHandler = HandlerGenerator.GetHandler(request, filterKeys, serviceObj, payload);
-                    methodHandler.Handle(ref response);
-                    responseString = methodHandler.ResponseString;
+                    // TODO: the version number isn't always a version number
+                        // and getting exception somewhere ... add a check?
+                    var versionNumber = tokens[tokens.Length - 2];
+                    var objectName = tokens[tokens.Length - 1];  // the last one should correspond to the property or object name
+                    if (objectName.Contains('?'))
+                    {
+                        objectName = objectName.Split("?")[0];
+                    }
+
+                    String fail = String.Empty;
+                    if (!_servableItems.Any(si => si.AccessName.Equals(objectName)))
+                    {
+                        // try checking the next to last one (i.e. if there is a version number)
+                        objectName = tokens[tokens.Length - 2];
+                        if (!_servableItems.Any(si => si.AccessName.Equals(objectName)))
+                        {
+                            versionNumber = "v1";   // default
+                        } else
+                        {
+                            // no recognizable object name from the URL in servable itmes
+                            fail = "No recognizable object name from the URL in servable itmes";
+
+                        }
+                    }
+
+                    if (String.IsNullOrEmpty(fail))
+                    {
+                        var filterKeys = request.QueryString;
+                        // get original name matches or overridden name matches
+                        var check = _servableItems.Where(si => si.AccessName.Equals(objectName, StringComparison.InvariantCultureIgnoreCase));
+
+                        //                         var serviceObjs = _servableItems.Where(si => si.AccessName.Equals(objectName, StringComparison.InvariantCultureIgnoreCase) ||
+                        //(!String.IsNullOrWhiteSpace(si.OverriddenName) && si.OverriddenName.Equals(objectName, StringComparison.InvariantCultureIgnoreCase)) ).ToList();
+                        var directmatches = _servableItems.Where(si => si.AccessName.Equals(objectName, StringComparison.InvariantCultureIgnoreCase) ).ToList();
+                        var overrideMatches = _servableItems.Where(si =>
+                               (!String.IsNullOrWhiteSpace(si.OverriddenName) && si.OverriddenName.Equals(objectName, StringComparison.InvariantCultureIgnoreCase))).ToList();
+                        var serviceObjs = directmatches.Union(overrideMatches).ToList();
+
+                        ServableItem serviceObj = null;
+                        if (serviceObjs.Count == 1)
+                        {
+                            // no ambiguity ... go with it
+                            serviceObj = serviceObjs.First();
+                        } else
+                        {
+                            // use version number
+                            serviceObj = serviceObjs.First(so => so.Version.Equals(versionNumber, StringComparison.InvariantCultureIgnoreCase));
+                        }
+
+                        var methodHandler = HandlerGenerator.GetHandler(request, filterKeys, serviceObj, payload);
+                        methodHandler.Handle(ref response);
+                        responseString = methodHandler.ResponseString;
+                    } else
+                    {
+                        responseString = fail;
+                        response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    }
                 }
             }
             else
@@ -252,7 +316,9 @@ namespace GhostLineAPI
                         {
                             GhostReadAttribute gra = attr as GhostReadAttribute;
                             GhostWriteAttribute gwa = attr as GhostWriteAttribute;
-                            if (gra != null || gwa != null)
+                            GhostReadWriteAttribute grwa = attr as GhostReadWriteAttribute;
+                            GhostAttribute ga = attr as GhostAttribute;
+                            if (gra != null || gwa != null || grwa != null)
                             {
                                 var servableItem = new ServableItem
                                 {
@@ -282,13 +348,17 @@ namespace GhostLineAPI
                                     servableItem.PropertyInfo = prop;
                                 }
 
-                                if (gra != null)
+                                if (gra != null || grwa != null)
                                 {
                                     servableItem.CanRead = true;
+                                    servableItem.Version = ga.Version;
+                                    servableItem.OverriddenName = ga.OverrideName;
                                 }
-                                if (gwa != null)
+                                if (gwa != null || grwa != null)
                                 {
                                     servableItem.CanWrite = true;
+                                    servableItem.Version = ga.Version;
+                                    servableItem.OverriddenName = ga.OverrideName;
                                 }
                                 _servableItems.Add(servableItem);
                             }
@@ -303,13 +373,15 @@ namespace GhostLineAPI
                         {
                             GhostReadAttribute gra = attr as GhostReadAttribute;
                             GhostWriteAttribute gwa = attr as GhostWriteAttribute;
-                            if (gra != null || gwa != null)
+                            GhostReadWriteAttribute grwa = attr as GhostReadWriteAttribute;
+                            GhostAttribute ga = attr as GhostAttribute;
+                            if (gra != null || gwa != null || grwa != null)
                             {
                                 var servableItem = new ServableItem
                                 {
                                     AssemblyFullName = assembly.FullName,
-                                    Type = field.FieldType, //.PropertyType,
-                                    FieldName = field.Name//prop.Name
+                                    Type = field.FieldType,
+                                    FieldName = field.Name,
                                 };
                                 servableItem.GenerateId();
 
@@ -332,13 +404,17 @@ namespace GhostLineAPI
                                     servableItem.FieldInfo = field;
                                 }
 
-                                if (gra != null)
+                                if (gra != null || grwa != null)
                                 {
                                     servableItem.CanRead = true;
+                                    servableItem.Version = ga.Version;
+                                    servableItem.OverriddenName = ga.OverrideName;
                                 }
-                                if (gwa != null)
+                                if (gwa != null || grwa != null)
                                 {
                                     servableItem.CanWrite = true;
+                                    servableItem.Version = ga.Version;
+                                    servableItem.OverriddenName = ga.OverrideName;
                                 }
                                 _servableItems.Add(servableItem);
                             }

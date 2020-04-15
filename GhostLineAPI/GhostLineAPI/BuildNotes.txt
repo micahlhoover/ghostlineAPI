@@ -5,3 +5,8 @@ Run the nuget build like this:
 	nuget pack GhostLineAPI.nuspec
 
 Make sure to copy the bin/ dll to lib
+
+
+Remaining work:
+- Disable-able performance benchmarking
+- Handle the calls in a slightly more HTTP compliant array (validate empty if POST)

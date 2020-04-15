@@ -17,6 +17,8 @@ namespace GhostLineAPI
         public String FieldName { get; set; }
         public FieldInfo FieldInfo { get; set; }
         public String AccessName { get; set; }
+        public String Version { get; set; }
+        public String OverriddenName { get; set; }
 
         public String Id { get; set; }
 

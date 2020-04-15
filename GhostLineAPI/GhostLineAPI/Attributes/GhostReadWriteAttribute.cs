@@ -5,20 +5,20 @@ using System.Text;
 namespace GhostLineAPI.Attributes
 {
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, Inherited = false, AllowMultiple = true)]
-    public class GhostReadAttribute : GhostAttribute
+    public class GhostReadWriteAttribute : GhostAttribute
     {
-        public GhostReadAttribute()
+        public GhostReadWriteAttribute()
             : base()
         {
             canRead = true;
-            canWrite = false;
+            canWrite = true;
         }
 
-        public GhostReadAttribute(string version, bool disableVersioning, String overrideName)
+        public GhostReadWriteAttribute(string version, bool disableVersioning, String overrideName)
             : base(version, disableVersioning, overrideName)
         {
             canRead = true;
-            canWrite = false;
+            canWrite = true;
         }
     }
 }
