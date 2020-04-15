@@ -12,7 +12,6 @@ namespace GhostLineAPI.MethodHandlers
         public override void Handle(ref HttpListenerResponse response)
         {
             // set the value
-
             Type serviceItemType = ServiceObj.Type;
 
             var thisObj = JsonConvert.DeserializeObject(Payload, serviceItemType);
@@ -21,7 +20,6 @@ namespace GhostLineAPI.MethodHandlers
 
             if (ServiceObj.CanWrite)
             {
-                //if (filterKeys.AllKeys.Count() == 0)
                 if (listWasSent)
                 {
                     Utilities.SetOrOverwriteValue(ServiceObj, thisObj, ParentObj);

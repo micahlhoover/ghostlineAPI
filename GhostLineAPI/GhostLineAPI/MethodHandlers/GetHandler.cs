@@ -10,7 +10,6 @@ namespace GhostLineAPI.MethodHandlers
     {
         public override void Handle(ref HttpListenerResponse response)
         {
-            //Response = new HttpListenerResponse();
             if (ServiceObj.CanRead)
             {
                 if (FilterKeys == null || FilterKeys.AllKeys.Length == 0)

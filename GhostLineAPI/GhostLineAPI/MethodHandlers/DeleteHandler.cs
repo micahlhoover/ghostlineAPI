@@ -17,9 +17,7 @@ namespace GhostLineAPI.MethodHandlers
                 if (FilterKeys.AllKeys.Count() == 0)
                 {
                     // just obliterate it with the default
-                    //default();
                     var thisObj = (ServiceObj.Type.IsValueType ? Activator.CreateInstance(ServiceObj.Type) : null);
-                    //var thisObj = default(ServiceObj.);
                     Utilities.SetOrOverwriteValue(ServiceObj, thisObj, ParentObj);
                 }
                 else
@@ -27,7 +25,6 @@ namespace GhostLineAPI.MethodHandlers
                     // delete with query parameters
                     Type serviceItemType = ServiceObj.Type;
 
-                    //var thisObj = JsonConvert.DeserializeObject(payload, serviceItemType);
                     bool isList = IsList(ServiceObj.Type);
 
                     // selective delete

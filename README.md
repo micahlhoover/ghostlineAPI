@@ -85,10 +85,3 @@ If you PUT an array, the entire object will be replaced.
 IF you DELETE with query parameters only the objects that match your criteria will be deleted.
 
 If you DELETE with no query parameters the property or field will be replaced by whatever the default is for that Type.
-
-Remaining work:
-
-- Handle the calls in a slightly more HTTP compliant array (validate empty if POST)
-- Remove Copy Pasta	
-- Test query parameters other than GET
-- Performance benchmarking

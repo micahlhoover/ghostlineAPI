@@ -21,7 +21,6 @@ namespace GhostLineAPI.MethodHandlers
 
             if (ServiceObj.CanWrite)
             {
-                //if (filterKeys.AllKeys.Count() == 0)
                 if (!listWasSent)
                 {
                     Utilities.SetOrOverwriteValue(ServiceObj, thisObj, ParentObj);

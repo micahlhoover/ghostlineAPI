@@ -26,7 +26,6 @@ namespace ElkDogModel
 
         public ElkDogManager()
         {
-            //throw new Exception("Must add support in the Server reflect method for the attribute changes above.");
         }
 
         public void Manage()

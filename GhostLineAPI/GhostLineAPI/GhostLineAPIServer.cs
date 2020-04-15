@@ -66,8 +66,7 @@ namespace GhostLineAPI
             Port = 19001;
 
             LogType = LogType.Console;
-            //LogLevel = LogLevel.Error;        // TODO: put this back
-            LogLevel = LogLevel.Info;
+            LogLevel = LogLevel.Error;
         }
 
         public void SetupAndStartServer()
@@ -155,7 +154,6 @@ namespace GhostLineAPI
             using (var reader = new StreamReader(request.InputStream, Encoding.UTF8))
             {
                 payload = reader.ReadToEnd();
-                // Do something with the value
             }
 
             if (payload.Equals("DONE"))
@@ -191,14 +189,9 @@ namespace GhostLineAPI
                     // get the value
                     var name = request.Url.ToString();     // {http://127.0.0.1:19001/UntrainedElkDogs} or {http://127.0.0.1:19001/v1/UntrainedElkDogs}
                     name = name.TrimEnd('/');
-                    //if (name.EndsWith("//"))
-                    //{
-                    //    name = name.TrimEnd('/');
-                    //}
                     var tokens = name.Split('/');
 
                     // TODO: the version number isn't always a version number
-                        // and getting exception somewhere ... add a check?
                     var versionNumber = tokens[tokens.Length - 2];
                     var objectName = tokens[tokens.Length - 1];  // the last one should correspond to the property or object name
                     if (objectName.Contains('?'))
@@ -228,8 +221,6 @@ namespace GhostLineAPI
                         // get original name matches or overridden name matches
                         var check = _servableItems.Where(si => si.AccessName.Equals(objectName, StringComparison.InvariantCultureIgnoreCase));
 
-                        //                         var serviceObjs = _servableItems.Where(si => si.AccessName.Equals(objectName, StringComparison.InvariantCultureIgnoreCase) ||
-                        //(!String.IsNullOrWhiteSpace(si.OverriddenName) && si.OverriddenName.Equals(objectName, StringComparison.InvariantCultureIgnoreCase)) ).ToList();
                         var directmatches = _servableItems.Where(si => si.AccessName.Equals(objectName, StringComparison.InvariantCultureIgnoreCase) ).ToList();
                         var overrideMatches = _servableItems.Where(si =>
                                (!String.IsNullOrWhiteSpace(si.OverriddenName) && si.OverriddenName.Equals(objectName, StringComparison.InvariantCultureIgnoreCase))).ToList();

@@ -17,14 +17,12 @@ namespace GhostLineAPI.MethodHandlers
         public ServableItem ServiceObj { get; set; }
         public String ResponseString { get; set; }
         protected int ResponseCode { get; set; }
-        //protected HttpListenerResponse Response { get; set;}
         
         protected Object ParentObj { get; set; }
 
         public HttpListenerRequest Request { get; set; }
         public NameValueCollection NameValueCollection { get; set; }
         public String Payload { get; set; }
-        //public ServableItem ServableItem { get; set; }
 
         virtual public void Handle(ref HttpListenerResponse response)
         {
